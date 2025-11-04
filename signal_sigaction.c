@@ -2,7 +2,9 @@
 * @file signal_sigaction.c
 * @author Nathan Eppler <epplern@msoe.edu>
 * @date 3 November 2025
-* @brief
+*
+* To Compile: make signal_sigaction
+* To Run: ./signal_sigaction 
 */
 
  /**

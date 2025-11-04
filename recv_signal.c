@@ -2,6 +2,10 @@
 * @file recv_signal.c
 * @author Nathan Eppler <epplern@msoe.edu>
 * @date 3 November 2025
+*
+* To Compile: make recv_signal
+* To Run: ./recv_signal & 
+* ^ This program is intended to run the the background.
 */
 
  /**
@@ -9,10 +13,9 @@
  * Modified by: Nathan Eppler <epplern@msoe.edu>
  * 
  * Brief summary of program: Waits in an infinite loop doing nothing until a 
- * SIGUSR1 is recieved. On this signal, the program prints out the sender's PID
- * and then continues in the loop. The program can be killed via kill -SIGKILL <pid>.
+ * SIGUSR1 is recieved. On this signal, the program prints out the sender's random
+ * number. Program can be killed via $kill -SIGKILL <pid>
  *
- * To Send SIGUSR1: kill -SIGUSR1 <pid>
  */
 
  #include <signal.h>
@@ -20,8 +23,9 @@
  #include <unistd.h>
 
  void usr1_handler(int signum, siginfo_t *info, void *context) {
-    printf("Sender PID: %d\n", info->si_pid);
-    fflush(stdout);
+    union sigval val = info->si_value;
+    printf("Random value recieved: %d\n", val.sival_int); 
+    fflush(stdout); //flush the stdout stream to be printed in background
  }
 
  int main(void) {

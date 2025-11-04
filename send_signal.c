@@ -2,33 +2,58 @@
 * @file send_signal.c
 * @author Nathan Eppler <epplern@msoe.edu>
 * @date 3 November 2025
-* @brief
+*
+* To Compile: make send_signal
+* To Run: ./send_signal <pid>
 */
 
 /**
  * File: send_signal.c
  * Modified by: Nathan Eppler <epplern@msoe.edu>
  * 
- * Brief summary of program:
- *
- * To Send SIGUSR1: -kill SIGUSR1 <pid>
+ * Brief summary of program: Sends a SIGUSR1 to the specified PID when run.
+ * PID specified at command line via './send_signal <pid>'.
  */
 
+ #include <stdlib.h>
  #include <signal.h>
  #include <stdio.h>
+ #include <sys/types.h>
+ #include <sys/time.h>
+ #include <time.h>
+ #include <errno.h>
 
- void usr1_handler(int pid) {
-    printf("Sender PID: %d", pid);
- }
+ int main(int argc, char *argv[]) {
 
- int main(void) {
-    struct sigaction sa = {0}; //set all struct fields to zero
-    sa.sa_handler = &usr1_handler;
-    sigaction(SIGUSR1, &sa, NULL);
+    if (argc == 2) {
+        char *pid_str = argv[1];
+        char *end;
+        pid_t pid = strtod(pid_str, &end);
 
+        if (pid_str != end) {
+            //valid input
+            errno = 0;
+            int ret = kill(pid, 0); //test to see if PID exists
 
-    while (true) {
-        sleep(1);
+            if (ret == 0) { //PID exsits and we have permissions
+                //store rand val for reciever
+                struct timespec ts = {0};
+                clock_gettime(CLOCK_REALTIME, &ts);
+                srand(ts.tv_sec); //set random seed based on time
+                union sigval sending_val = {0};
+                sending_val.sival_int = rand(); //set random val to send
+
+                sigqueue(pid, SIGUSR1, sending_val);
+            } else {
+                printf("Error with PID: %d\n", pid);
+                perror("Description"); //print error message
+            }
+        } else {
+            printf("Invalid PID: %s\n", argv[1]);
+        }
+    } else {
+        printf("Error: invalid number of arguments\n"
+            "Expected: './send_signal <pid>'\n");
     }
 
     return 0;

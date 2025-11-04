@@ -2,6 +2,9 @@
 * @file signal_alarm.c
 * @author Nathan Eppler <epplern@msoe.edu>
 * @date 3 November 2025
+* 
+* To Compile: make signal_alarm
+* To Run: ./signal_alarm
 */
 
 
