@@ -1,4 +1,4 @@
-CFLAGS=-c -g -Wall -Werror -lc
+CFLAGS=-c -g -Wextra -Werror -lc
 CC=gcc
 
 all: recv_signal signal_handler send_signal signal_alarm signal_segfault signal_sigaction
